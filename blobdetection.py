@@ -420,7 +420,6 @@ def getMostlyCleanImages(images, g):
 How to use the function is shown below:
 """
 import ee
-import numpy as np
 
 ee.Initialize()
 
@@ -431,7 +430,7 @@ y=5
 #for y in range(6):
 
 #Define bounds
-tiles = ee.FeatureCollection('zoom13tilesMD.csv')
+tiles = ee.FeatureCollection('projects/mekongdeltares/assets/zoom13tilesMD')
 listtiles = tiles.toList(tiles.size())
 t=0
 #or
