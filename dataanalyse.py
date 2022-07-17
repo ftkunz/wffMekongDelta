@@ -1,13 +1,18 @@
 import pandas as pd
 import uuid
-
+import random
 import pandas as pd
 import numpy as np
 import glob, os, json
-# import geopandas
+import geopandas
 # from pandas_geojson import read_geojson
 
 import matplotlib.pyplot as plt
+
+rd = random.Random()
+rd.seed(0)
+uuid.uuid4 = lambda: uuid.UUID(int=rd.getrandbits(128))
+
 
 # geodf = geopandas.read_file("boats_table_geojson_Zoom13_th0.2_Tile0_MekongDelta_2021.geojson")
 
@@ -76,22 +81,22 @@ import matplotlib.pyplot as plt
 #
 # print('th0.1',np.mean(lst01),sum01,'th0.2',np.mean(lst02),sum02) #0.2 gives most detected blobs
 #
-# dfblob = []
-# for file in range(271):
-#     # geodf = geopandas.read_file("Mekong_delta_tables_geojson_2021/boats_table_geojson_Zoom13_th0.2_Tile"+str(file)+"_MekongDelta_2021.geojson")
-#     geodf = pd.read_csv(
-#         "Mekong_delta_tables_csv/boats_table_csv_Zoom13_th0.2_Tile" + str(file) + "_MekongDelta_2021.csv")
-#     geodf['Tile'] = file
-#     # geodf = geodf.assign(blobID = lambda x: uuid.uuid4())
-#     dfblob.append(geodf)
-# dfblob = pd.concat(dfblob)
+dfblob = []
+for file in range(271):
+    geodf = geopandas.read_file("Mekong_delta_tables_geojson_2021/boats_table_geojson_Zoom13_th0.2_Tile"+str(file)+"_MekongDelta_2021.geojson")
+    # geodf = pd.read_csv(
+    #     "Mekong_delta_tables_csv/boats_table_csv_Zoom13_th0.2_Tile" + str(file) + "_MekongDelta_2021.csv")
+    geodf['Tile'] = file
+    # geodf = geodf.assign(blobID = lambda x: uuid.uuid4())
+    dfblob.append(geodf)
+dfblob = pd.concat(dfblob)
 # dfblob['blobID'] = dfblob.apply(lambda x: uuid.uuid4(), axis=1)
 # dfblob.to_csv('Blobs2021.csv')
-
+#
 # df = pd.read_csv('Blobs2021.csv')
 # df.to_pickle('Blobs2021df')
-
-df = pd.read_pickle('Blobs2021df')
+#
+# df = pd.read_pickle('Blobs2021df')
 
 # print(df['blobID'])
 # df.hist()
