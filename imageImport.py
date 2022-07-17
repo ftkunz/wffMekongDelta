@@ -57,27 +57,39 @@ def getResult(index,blobID):
                          .select(['B4', 'B3', 'B2'])
                         .resample('bicubic').divide(10000), 3, region).visualize(min=0, max=1)
 
+        url = image.getThumbURL({
+            'region': region,
+            'dimensions': '256x256',
+            'format': 'png'})
+
+        r = requests.get(url, stream=True)
+        if r.status_code != 200:
+            r.raise_for_status()
+        filename = 'BlobpngRGB/' + str(blobID) + '_' + str(year) + '_RGB.png'
+        storage_client = storage.Client()
+        bucket = storage_client.bucket('wwf-sand-budget')
+        blob = bucket.blob(filename)
+        blob.upload_from_file(r.raw)
+
     if SNG:
         image = stretchImage(ee.Image(imgid)
                         .clip(region)
                             .select(['B12','B8','B3'])
                         .resample('bicubic').divide(10000), 3, region).visualize(min=0, max=1)
+        url = image.getThumbURL({
+            'region': region,
+            'dimensions': '256x256',
+            'format': 'png'})
 
+        r = requests.get(url, stream=True)
+        if r.status_code != 200:
+            r.raise_for_status()
+        filename = 'BlobpngSNG/' + str(blobID) + '_' + str(year) + '_SNG.png'
+        storage_client = storage.Client()
+        bucket = storage_client.bucket('wwf-sand-budget')
+        blob = bucket.blob(filename)
+        blob.upload_from_file(r.raw)
 
-    url = image.getThumbURL({
-        'region': region,
-        'dimensions': '256x256',
-        'format': 'png'})
-
-    r = requests.get(url, stream=True)
-    if r.status_code != 200:
-        r.raise_for_status()
-
-    filename = 'BlobpngRGB/' + str(blobID) + '.png'
-    storage_client = storage.Client()
-    bucket = storage_client.bucket('wwf-sand-budget')
-    blob = bucket.blob(filename)
-    blob.upload_from_file(r.raw)
     # with open(filename, 'wb') as out_file:
     #     shutil.copyfileobj(r.raw, out_file)
     # print("Done")
