@@ -6,9 +6,10 @@ import shutil
 from retry import retry
 import pandas as pd
 import json
+from google.cloud import storage
 
 ee.Initialize(opt_url='https://earthengine-highvolume.googleapis.com')
-df = pd.read_pickle('Blobs2021df')
+
 
 
 def stretchImage(image, scale ,bounds):
@@ -39,19 +40,29 @@ def stretchImage(image, scale ,bounds):
 
 @retry(tries=10,delay=1,backoff=2)
 def getResult(index,blobID):
+    year = 2021
+    RGB = True
+    SNG = False
 
-    df = df.loc[df['blobID'] == blobID]
-    imgid = str(df['image_id'].values[0])
-    centroid = df['centroid'].values[0]
+    df1 = df.loc[df['blobID'] == blobID]
+    imgid = str(df1['image_id'].values[0])
+    centroid = df1['centroid'].values[0]
 
     centerpoint = ee.Geometry.Point(json.loads(centroid)['coordinates'])
     region = centerpoint.buffer(100).bounds()
 
-    image = stretchImage(ee.Image(imgid)
+    if RGB:
+        image = stretchImage(ee.Image(imgid)
                         .clip(region)
                          .select(['B4', 'B3', 'B2'])
-                            # .select(['B12','B8','B3'])
                         .resample('bicubic').divide(10000), 3, region).visualize(min=0, max=1)
+
+    if SNG:
+        image = stretchImage(ee.Image(imgid)
+                        .clip(region)
+                            .select(['B12','B8','B3'])
+                        .resample('bicubic').divide(10000), 3, region).visualize(min=0, max=1)
+
 
     url = image.getThumbURL({
         'region': region,
@@ -62,12 +73,17 @@ def getResult(index,blobID):
     if r.status_code != 200:
         r.raise_for_status()
 
-    filename = 'BlobpngRGB/' + str(ID) + '.png'
-    with open(filename, 'wb') as out_file:
-        shutil.copyfileobj(r.raw, out_file)
-    print("Done")
+    filename = 'BlobpngRGB/' + str(blobID) + '.png'
+    storage_client = storage.Client()
+    bucket = storage_client.bucket('wwf-sand-budget')
+    blob = bucket.blob(filename)
+    blob.upload_from_file(r.raw)
+    # with open(filename, 'wb') as out_file:
+    #     shutil.copyfileobj(r.raw, out_file)
+    # print("Done")
 
 if __name__ == '__main__':
+  df = pd.read_pickle('Blobs2021df')
   logging.basicConfig()
   items = df['blobID']
 

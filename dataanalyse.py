@@ -10,6 +10,8 @@ import geopandas
 import matplotlib.pyplot as plt
 
 rd = random.Random()
+#Change for different years:
+# 0 = 2021
 rd.seed(0)
 uuid.uuid4 = lambda: uuid.UUID(int=rd.getrandbits(128))
 
