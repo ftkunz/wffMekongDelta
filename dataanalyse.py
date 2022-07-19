@@ -87,7 +87,7 @@ dfblob = []
 for file in range(271):
     # geodf = geopandas.read_file("Mekong_delta_tables_geojson_2021/boats_table_geojson_Zoom13_th0.2_Tile"+str(file)+"_MekongDelta_2021.geojson")
     geodf = pd.read_csv(
-        "Mekong_delta_tables_csv/boats_table_csv_Zoom13_th0.2_Tile" + str(file) + "_MekongDelta_2021.csv")
+        "WWFMekongDelta/Mekong_delta_tables_csv/boats_table_csv_Zoom13_th0.2_Tile" + str(file) + "_MekongDelta_2021.csv")
     geodf['Tile'] = file
     # geodf = geodf.assign(blobID = lambda x: uuid.uuid4())
     dfblob.append(geodf)
