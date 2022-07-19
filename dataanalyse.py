@@ -85,43 +85,43 @@ uuid.uuid4 = lambda: uuid.UUID(int=rd.getrandbits(128))
 #
 dfblob = []
 for file in range(271):
-    geodf = geopandas.read_file("Mekong_delta_tables_geojson_2021/boats_table_geojson_Zoom13_th0.2_Tile"+str(file)+"_MekongDelta_2021.geojson")
-    # geodf = pd.read_csv(
-    #     "Mekong_delta_tables_csv/boats_table_csv_Zoom13_th0.2_Tile" + str(file) + "_MekongDelta_2021.csv")
+    # geodf = geopandas.read_file("Mekong_delta_tables_geojson_2021/boats_table_geojson_Zoom13_th0.2_Tile"+str(file)+"_MekongDelta_2021.geojson")
+    geodf = pd.read_csv(
+        "Mekong_delta_tables_csv/boats_table_csv_Zoom13_th0.2_Tile" + str(file) + "_MekongDelta_2021.csv")
     geodf['Tile'] = file
     # geodf = geodf.assign(blobID = lambda x: uuid.uuid4())
     dfblob.append(geodf)
 dfblob = pd.concat(dfblob)
-# dfblob['blobID'] = dfblob.apply(lambda x: uuid.uuid4(), axis=1)
-# dfblob.to_csv('Blobs2021.csv')
+dfblob['blobID'] = dfblob.apply(lambda x: uuid.uuid4(), axis=1)
+dfblob.to_csv('Blobs2021.csv')
 #
-# df = pd.read_csv('Blobs2021.csv')
-# df.to_pickle('Blobs2021df')
-#
-# df = pd.read_pickle('Blobs2021df')
+df = pd.read_csv('Blobs2021.csv')
+df.to_pickle('Blobs2021df')
 
-# print(df['blobID'])
+df = pd.read_pickle('Blobs2021df')
+
+print(df['blobID'])
 # df.hist()
 # df.hist('distance2shore',bins=100)
 # df.hist('area',bins=100)
 # df.hist('width',bins=100)
 # df.hist('height',bins=100)
 # plt.show()
-
-print(max(df.count()))
-
-# df.hist('area',bins=100)
-# df.hist('width',bins=100)
-
-df = df[df['height']<200]
-df = df[df['distance2shore']>60]
+#
+# print(max(df.count()))
+#
+# # df.hist('area',bins=100)
+# # df.hist('width',bins=100)
+#
+# df = df[df['height']<200]
+# df = df[df['distance2shore']>60]
 
 # df.hist('height',bins=100)
 # df.hist('area',bins=100)
 # df.hist('width',bins=100)
-print(max(df.count()))
-# plt.show()
-print('distance2shore',np.mean(df['distance2shore']),max(df['distance2shore']),min(df['distance2shore']))
-print('area',np.mean(df['area']),max(df['area']),min(df['area']))
-print('width',np.mean(df['width']),max(df['width']),min(df['width']))
-print('height',np.mean(df['height']),max(df['height']),min(df['height']))
+# print(max(df.count()))
+# # plt.show()
+# print('distance2shore',np.mean(df['distance2shore']),max(df['distance2shore']),min(df['distance2shore']))
+# print('area',np.mean(df['area']),max(df['area']),min(df['area']))
+# print('width',np.mean(df['width']),max(df['width']),min(df['width']))
+# print('height',np.mean(df['height']),max(df['height']),min(df['height']))
