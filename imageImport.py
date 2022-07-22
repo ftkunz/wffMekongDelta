@@ -65,7 +65,7 @@ def getResult(index,blobID):
         r = requests.get(url, stream=True)
         if r.status_code != 200:
             r.raise_for_status()
-        filename = 'BlobpngRGB/' + str(blobID) + '_' + str(year) + '_RGB.png'
+        filename = 'BlobpngRGB'+ str(year)+'/' + str(blobID) + '_Tile'+str(i)+'_' + str(year) + '_RGB.png'
         storage_client = storage.Client()
         bucket = storage_client.bucket('wwf-sand-budget')
         blob = bucket.blob(filename)
@@ -84,7 +84,7 @@ def getResult(index,blobID):
         r = requests.get(url, stream=True)
         if r.status_code != 200:
             r.raise_for_status()
-        filename = 'BlobpngSNG/' + str(blobID) + '_' + str(year) + '_SNG.png'
+        filename = 'BlobpngSNG'+ str(year)+'/' + str(blobID) + '_Tile'+str(i)+'_' + str(year) + '_SNG.png'
         storage_client = storage.Client()
         bucket = storage_client.bucket('wwf-sand-budget')
         blob = bucket.blob(filename)
