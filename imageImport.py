@@ -7,7 +7,7 @@ from retry import retry
 import pandas as pd
 import json
 from google.cloud import storage
-import tqdm as tqdm
+from tqdm import tqdm
 ee.Initialize(opt_url='https://earthengine-highvolume.googleapis.com')
 
 
