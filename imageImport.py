@@ -7,7 +7,7 @@ from retry import retry
 import pandas as pd
 import json
 from google.cloud import storage
-
+import tqdm as tqdm
 ee.Initialize(opt_url='https://earthengine-highvolume.googleapis.com')
 
 
@@ -42,7 +42,7 @@ def stretchImage(image, scale ,bounds):
 def getResult(index,blobID):
     year = 2021
     RGB = True
-    SNG = False
+    SNG = True
 
     df1 = df.loc[df['blobID'] == blobID]
     imgid = str(df1['image_id'].values[0])
@@ -93,13 +93,17 @@ def getResult(index,blobID):
     # with open(filename, 'wb') as out_file:
     #     shutil.copyfileobj(r.raw, out_file)
     # print("Done")
+    file1 = open("doneID.txt", "a")
+    file1.close()
 
 if __name__ == '__main__':
   df = pd.read_pickle('Blobs2021df')
-  logging.basicConfig()
-  items = df['blobID']
+  for i in tqdm(range(271)):
+      df = df[df['Tile']==i]
+      logging.basicConfig()
+      items = df['blobID']
 
-  pool = multiprocessing.Pool(25)
-  pool.starmap(getResult, enumerate(items))
+      pool = multiprocessing.Pool(25)
+      pool.starmap(getResult, enumerate(items))
 
-  pool.close()
+      pool.close()
