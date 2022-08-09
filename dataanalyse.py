@@ -11,6 +11,9 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 #
 rd = random.Random()
+
+y = 2021
+
 #Change for different years:
 # 0 = 2021, 1 = 2018, 2 = 2019, 3 = 2020, 4 = 2022, 5 = 2016, 6 = 2017
 if y == 2016:
