@@ -65,7 +65,7 @@ def getResult(index,blobID):
         r = requests.get(url, stream=True)
         if r.status_code != 200:
             r.raise_for_status()
-        filename = 'BlobpngRGB'+ str(year)+'/' + str(blobID) + '_Tile'+str(i)+'_' + str(year) + '_RGB.png'
+        filename = 'BlobpngRGB'+ str(year)+'Tile'+str(i)+'/' + str(blobID) + '_Tile'+str(i)+'_' + str(year) + '_RGB.png'
         storage_client = storage.Client()
         bucket = storage_client.bucket('wwf-sand-budget')
         blob = bucket.blob(filename)
@@ -84,7 +84,7 @@ def getResult(index,blobID):
         r = requests.get(url, stream=True)
         if r.status_code != 200:
             r.raise_for_status()
-        filename = 'BlobpngSNG'+ str(year)+'/' + str(blobID) + '_Tile'+str(i)+'_' + str(year) + '_SNG.png'
+        filename = 'BlobpngSNG'+ str(year)+'Tile'+str(i)+'/' + str(blobID) + '_Tile'+str(i)+'_' + str(year) + '_SNG.png'
         storage_client = storage.Client()
         bucket = storage_client.bucket('wwf-sand-budget')
         blob = bucket.blob(filename)
@@ -98,12 +98,12 @@ def getResult(index,blobID):
 
 if __name__ == '__main__':
   df = pd.read_pickle('Blobs2021df')
-  for i in tqdm(range(271)):
-      df = df[df['Tile']==i]
-      logging.basicConfig()
-      items = df['blobID']
+  i = 135
+  df = df[df['Tile']==i]
+  logging.basicConfig()
+  items = df['blobID']
 
-      pool = multiprocessing.Pool(25)
-      pool.starmap(getResult, enumerate(items))
+  pool = multiprocessing.Pool(25)
+  pool.starmap(getResult, enumerate(items))
 
-      pool.close()
+  pool.close()
