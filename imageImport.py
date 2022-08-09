@@ -100,8 +100,9 @@ def getResult(index,blobID):
                              .resample('bicubic').divide(10000))
         ee.batch.Export.image.toCloudStorage(
             image=image,
-            description='Blobtiff' + str(year) + 'Tile' + str(i) + '/' + str(blobID) + '_Tile' + str(i) + '_' + str(year) + '.tiff',
-            bucket='wwf-sand-budget'
+            description= str(blobID) + '_Tile' + str(i) + '_' + str(year) + '.tiff',
+            bucket='wwf-sand-budget',
+            filenamePrefix = 'Blobtiff' + str(year) + 'Tile' + str(i) + '/' + str(blobID) + '_Tile' + str(i) + '_' + str(year) + '.tiff'
         ).start()
 
 
