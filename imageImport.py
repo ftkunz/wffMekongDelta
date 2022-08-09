@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 ee.Initialize(opt_url='https://earthengine-highvolume.googleapis.com')
 
-
+Tile = 136
 
 def stretchImage(image, scale ,bounds):
   percentiles = [1, 99]
