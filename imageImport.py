@@ -8,6 +8,7 @@ import pandas as pd
 import json
 from google.cloud import storage
 from tqdm import tqdm
+
 ee.Initialize(opt_url='https://earthengine-highvolume.googleapis.com')
 
 
@@ -40,9 +41,10 @@ def stretchImage(image, scale ,bounds):
 
 @retry(tries=10,delay=1,backoff=2)
 def getResult(index,blobID):
-    year = 2021
+    year = y
     RGB = True
     SNG = True
+    tiff = False
 
     df1 = df.loc[df['blobID'] == blobID]
     imgid = str(df1['image_id'].values[0])
@@ -90,6 +92,26 @@ def getResult(index,blobID):
         blob = bucket.blob(filename)
         blob.upload_from_file(r.raw)
 
+    if tiff:
+        image = (ee.Image(imgid)
+                             .clip(region)
+                             .select(['B2','B3','B4','B5','B6','B7','B8','B8A','B11','B12'])
+                             .resample('bicubic').divide(10000))
+        url = image.getThumbURL({
+            'region': region,
+            'dimensions': '256x256',
+            'format': 'tiff'})
+
+        r = requests.get(url, stream=True)
+        if r.status_code != 200:
+            r.raise_for_status()
+        filename = 'Blobpngtiff' + str(year) + 'Tile' + str(i) + '/' + str(blobID) + '_Tile' + str(i) + '_' + str(
+            year) + '_SNG.tiff'
+        storage_client = storage.Client()
+        bucket = storage_client.bucket('wwf-sand-budget')
+        blob = bucket.blob(filename)
+        blob.upload_from_file(r.raw)
+
     # with open(filename, 'wb') as out_file:
     #     shutil.copyfileobj(r.raw, out_file)
     # print("Done")
@@ -98,7 +120,8 @@ def getResult(index,blobID):
 
 if __name__ == '__main__':
   df = pd.read_pickle('Blobs2021df')
-  i = 135
+  #define Tile as i in [0,270]
+  i = Tile
   df = df[df['Tile']==i]
   logging.basicConfig()
   items = df['blobID']
