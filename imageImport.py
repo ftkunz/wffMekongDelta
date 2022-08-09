@@ -98,20 +98,12 @@ def getResult(index,blobID):
                              .clip(region)
                              .select(['B2','B3','B4','B5','B6','B7','B8','B8A','B11','B12'])
                              .resample('bicubic').divide(10000))
-        url = image.getThumbURL({
-            'region': region,
-            'dimensions': '256x256',
-            'format': 'tiff'})
+        ee.batch.Export.image.toCloudStorage(
+            image=image,
+            description='Blobpngtiff' + str(year) + 'Tile' + str(i) + '/' + str(blobID) + '_Tile' + str(i) + '_' + str(year) + '_SNG.tiff',
+            bucket='wwf-sand-budget'
+        ).start()
 
-        r = requests.get(url, stream=True)
-        if r.status_code != 200:
-            r.raise_for_status()
-        filename = 'Blobpngtiff' + str(year) + 'Tile' + str(i) + '/' + str(blobID) + '_Tile' + str(i) + '_' + str(
-            year) + '_SNG.tiff'
-        storage_client = storage.Client()
-        bucket = storage_client.bucket('wwf-sand-budget')
-        blob = bucket.blob(filename)
-        blob.upload_from_file(r.raw)
 
     # with open(filename, 'wb') as out_file:
     #     shutil.copyfileobj(r.raw, out_file)
