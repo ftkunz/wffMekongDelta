@@ -467,6 +467,8 @@ if barges_with_crane_df:
                134, 135, 136, 137, 138, 140, 141, 142, 144, 145, 146, 147, 149, 150, 152, 153, 154, 158, 159, 160, 161, 162,
                173, 174, 175, 176, 177, 179, 180, 181,
                182, 183]
+    for i in np.arange(185, 271):
+        VMD.append(i)
 
     # df2018 = pd.read_pickle('Blobs2018df')
     # df2018 = df2018[df2018['Tile'].isin(VMD)]
@@ -537,8 +539,8 @@ if barges_with_crane_df:
     # df2021 = pd.read_pickle('bc2022df')
     # df2022 = pd.read_pickle('bc2022df')
     data = pd.concat([df2020,df2021,df2022], ignore_index=False)
-    BC = data.groupby(['Tile','date']).agg({'area': 'sum'}).reset_index()
-    getCount = data.groupby(['Tile', 'date']).size().reset_index(name='count')
+    BC = df2022.groupby(['Tile','date']).agg({'area': 'sum'}).reset_index()
+    getCount = df2022.groupby(['Tile', 'date']).size().reset_index(name='count')
     BC['count'] = getCount['count']
 
     plt.scatter(BC['date'],BC['count'],c=BC['Tile'])
@@ -547,9 +549,9 @@ if barges_with_crane_df:
     plt.show()
 
     # data = pd.read_pickle('bc2022df')
-    data['date'] = pd.to_datetime(data['date'])
-    BC = data.groupby(['date']).agg({'area': 'sum'}).reset_index()
-    getCount = data.groupby(['date']).size().reset_index(name='count')
+    # df2022['date'] = pd.to_datetime(df2022['date'])
+    BC = df2022.groupby(['date']).agg({'area': 'sum'}).reset_index()
+    getCount = df2022.groupby(['date']).size().reset_index(name='count')
     BC['count'] = getCount['count']
 
 
@@ -561,8 +563,8 @@ if barges_with_crane_df:
     ax2.plot(BC['date'],max, color = 'orange')
     ax2.plot(BC['date'],min, color = 'orange')
     ax2.set_ylabel('Extracted Volume [m3/d]',color='darkorange',fontsize=14)
-    # ax2.set_xticklabels(BC['date'],rotation='vertical')
-    ax2.set_xlim(list(BC['date'])[0],list(BC['date'])[-1])
+    ax2.set_xticklabels(BC['date'],rotation='vertical')
+    # ax2.set_xlim(list(BC['date'])[0],list(BC['date'])[-1])
     ax2.fill_between(BC['date'],min,max,color = 'orange')
     ax = ax2.twinx()
     ax.scatter(BC['date'],BC['count'], color = 'black')
